@@ -6,18 +6,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
+import javax.swing.*;
+import java.util.Date;
 
 // Own Package
 import othello.Othello;
-import board.*;
-
+import board.Board;
 
 // Main GUI implements here
 public class GUI_Othello extends JFrame implements ActionListener {
@@ -25,57 +19,58 @@ public class GUI_Othello extends JFrame implements ActionListener {
 	// Component declared here.
 	private JPanel jpanel;
 	private JButton[][] jbuttons;
-	private String[][] board = new String[1][1];
+	private Board[][] board;
+	private Othello game;
 	
-	public GUI_Othello() {
-		// game = new othello();
-		//this.setBoard(game.getBoard());
-		initializeGUI();
+	private GUI_Othello() {
+		this.game = new Othello();
+		this.updateBoard(game.getBoard());
+		this.initialize();
+		this.setVisible(true);
+	}
+
+	public GUI_Othello(Board[][] board) {
+		this.updateBoard(board);
+		initialize();
 		this.setVisible(true);
 	}
 	
 	// second constructor
 	
-	public void initializeGUI() {
+	private void initialize() {
 		this.jpanel = new JPanel();
 		this.jpanel.setLayout(new GridLayout(8,8,5,5));
 		this.jpanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		this.jbuttons = new JButton[8][8];
 		
-		
-		int i = 0,j = 0; // initialize the row and column to be zero in the board
-	
-	    while(i++ < this.board.length) {
-	    	while(j++ < this.board[i].length) {
-	    		if(this.board[i][j] != null) {
-	    			this.jbuttons[i][j] = new JButton(
-	    					this.board[i][j].toString());
+		for(int row=0 ; row<this.board.length; row++){
+	    	for(int col =0; col<this.board[row].length; col++) {
+	    		if(this.board[row][col] != null) {
+	    			this.jbuttons[row][col] = new JButton(this.board[row][col].toString());
 	    		} else {
-	    			this.jbuttons[i][j] = new JButton(".");
+	    			this.jbuttons[row][col] = new JButton(".");
 	    		}
-	    		this.jpanel.add(this.jbuttons[i][j]);
-	    		this.jbuttons[i][j].addActionListener(this);
-	    		if(this.renderButtonBackground(jbuttons[i][j])!=null) {
-		    		this.jbuttons[i][j].setBackground
-		    			(this.renderButtonBackground(this.jbuttons[i][j]));	
+	    		this.jpanel.add(this.jbuttons[row][col]);
+	    		this.jbuttons[row][col].addActionListener(this);
+	    		if(this.renderButtonBackground(jbuttons[row][col])!=null) {
+		    		this.jbuttons[row][col].setBackground
+		    			(this.renderButtonBackground(this.jbuttons[row][col]));
 	    		}
 	    		
 	    	}
-	    	j = 0; // reset count to the col to zero
 	    	this.jpanel.setVisible(true);
 	    }
 	    this.add(jpanel);
 	    this.setTitle("Welcome Othello Java");
 	    this.setSize(600,600);
 	    this.setLocationRelativeTo(null);
-	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // close button;  
+	    this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // close button;
 	}
-	/*
-	public void setBoard(Piece[][] board) {
+
+	public void updateBoard(Board[][] board) {
 		this.board = board;
-	}*/
-	
-	
+	}
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -99,76 +94,63 @@ public class GUI_Othello extends JFrame implements ActionListener {
 	
 	}
 
-	public void setBoard() {
+	private void setBoard(Board[][] board) {
 		this.board = board;
 	}
 	
-	public void renderGUIBoard() {
-		 int i = 0, j = 0;
-		  while(i++ < this.board.length) {
-		    	while(j++ < this.board[i].length) {
-		    		if(this.board[i][j] != null) {
-		    			this.jbuttons[i][j] = new JButton(
-		    					this.board[i][j].toString());
-		    		} else {
-		    			this.jbuttons[i][j] = new JButton(".");
-		    		}
-		    		this.jpanel.add(this.jbuttons[i][j]);
-		    		this.jbuttons[i][j].addActionListener(this);
-		    		if(this.renderButtonBackground(jbuttons[i][j])!=null) {
-			    		this.jbuttons[i][j].setBackground
-			    			(this.renderButtonBackground(this.jbuttons[i][j]));	
-		    		}
-		    		
-		    	}
-		    	j = 0; // reset count to the col to zero
-		    
+	private void renderGUIBoard() {
+		 int row = 0, col = 0;
+		  for(;row < this.board.length;row++) {
+		    	for(; col < this.board[row].length; col++) {
+					if (this.board[row][col] != null) {
+						this.jbuttons[row][col] = new JButton(this.board[row][col].toString());
+					} else {
+						this.jbuttons[row][col] = new JButton(".");
+					}
+					this.jpanel.add(this.jbuttons[row][col]);
+					this.jbuttons[row][col].addActionListener(this);
+					if (this.renderButtonBackground(jbuttons[row][col]) != null) {
+						this.jbuttons[row][col].setBackground
+								(this.renderButtonBackground(this.jbuttons[row][col]));
+					}
+				}
 		    }	
 	}
+
 	
 	/**
 	 * Helper function
 	 * */
-	public Color renderButtonBackground(JButton button) {
-		if(button.getText() ==  "X") {
+	private Color renderButtonBackground(JButton button) {
+		if(button.getText().equals("X")) {
 			return Color.BLACK;	
-		} else if (button.getText() == "O"){
+		} else if (button.getText().equals("O")){
 			return Color.WHITE;
 		} else {
 			return Color.LIGHT_GRAY;
 		}
 	}
 	
-	public boolean playerRound(int row, int col) {
+	private boolean playerRound(int row, int col) {
 		boolean tf = false;
 		if(this.game.playerTurn(row, col)) {
 			tf = true;
 		}
-		this.setBoard(game.getBoard());
+		this.setBoard(this.game.getBoard());
 		this.renderGUIBoard();
 		if(this.game.hasGameOver()) {
 			System.out.println("The game has ended");
 			System.out.println("Winner is ...."); // We'll come back later
 		}
-		if(!this.game.playerCanMove() && ! thsi.game.hasGameOver()) {
+		if(!this.game.playerCanMove() && ! this.game.hasGameOver()) {
 			System.out.println("Sorry! It's computer's turn now");
 		}
 		
 		return tf;
 	}
 	
-	public void computerRound() {
-		Thread thread = new Thread() {
-			public void run() {
-				try {
-					Thread.sleep(2000);
-				} catch(InterruptedException e) {
-					e.printStackTrace();
-				}
-				this.game.computerTurn();
-			 
-			}
-		};
+	private void computerRound() {
+		Thread thread = new Thread(this.game);
 		thread.start();
 		if(this.game.hasGameOver()) {
 			System.out.println("The game has ended");
