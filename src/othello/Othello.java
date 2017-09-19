@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 // Own package
 import board.Board;
 import board.boardPiece;
+import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH;
 import main.GUI_Othello;
 
 
@@ -59,11 +60,127 @@ public class Othello extends _2DGame implements Runnable {
             if(getRefboardPiece(row, col, board) != null) {
                 return false;
             } else{
-                for(int boardIndex = col - 1; boardIndex >= 0; board == null) {
-                    if(getRefboardPiece(row, col, board) == null) {
+                int numBoardPieceFlipped = 0
+                for(int boardIndex = col - 1; boardIndex >= 0; boardIndex--) {
+                    if(getRefboardPiece(row, boardIndex, board) == null ||
+                            (this.getRefboardPiece(row,boardIndex,board).toString().equals(player)
+                            && numBoardPieceFlipped == 0))
                         break;
-                    }
+                    if(!(this.getRefboardPiece(row,boardIndex,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(row,boardIndex,board).toString().equals(player))
+                        return true;
                 }
+                numBoardPieceFlipped = 0;
+
+                for(int c = col+1; c<this.getTotalColumns(); c++) {
+                    if(this.getRefboardPiece(row,c,board)==null ||
+                            (this.getRefboardPiece(row,c,board).toString().equals(player)
+                                && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(row,c,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(row,c,board).toString().equals(player))
+                        return true;
+                }
+                numBoardPieceFlipped = 0;
+
+                for(int r = row-1; r>=0; r--) {
+                    if(this.getRefboardPiece(r,col,board)==null ||
+                            (this.getRefboardPiece(r,col,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(r,col,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(r,col,board).toString().equals(player))
+                        return true;
+                }
+                numBoardPieceFlipped = 0;
+
+                for(int r = row+1; r<this.getTotalRows(); r++) {
+                    if(this.getRefboardPiece(r,col,board)==null ||
+                            (this.getRefboardPiece(r,col,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(row,col,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(row,col,board).toString().equals(player))
+                        return true;
+                }
+                numBoardPieceFlipped = 0;
+
+                int rc = col+1;
+                int cr = row+1;
+
+                while(rc<this.getTotalColumns() && cr<this.getTotalRows()) {
+                    if(this.getRefboardPiece(cr,rc,board)==null ||
+                            (this.getRefboardPiece(cr,rc,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(cr,rc,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(cr,rc,board).toString().equals(player))
+                        return true;
+                    rc++;
+                    cr++;
+                }
+                numBoardPieceFlipped = 0;
+
+                rc = col-1;
+                cr = row+1;
+                while(rc>=0 && cr<this.getTotalRows()) {
+                    if(this.getRefboardPiece(cr,rc,board)==null ||
+                            (this.getRefboardPiece(cr,rc,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(cr,rc,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(cr,rc,board).toString().equals(player))
+                        return true;
+                    rc--;
+                    cr++;
+                }
+                numBoardPieceFlipped = 0;
+
+                rc = col+1;
+                cr = row-1;
+                while(rc<this.getTotalColumns() && cr>=0) {
+                    if(this.getRefboardPiece(cr,rc,board)==null ||
+                            (this.getRefboardPiece(cr,rc,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(cr,rc,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(cr,rc,board).toString().equals(player))
+                        return true;
+                    rc++;
+                    cr--;
+                }
+                numBoardPieceFlipped = 0;
+
+                rc = col-1;
+                rc = row-1;
+                while(rc>=0 && cr>=0) {
+                    if(this.getRefboardPiece(cr,rc,board)==null ||
+                            (this.getRefboardPiece(cr,rc,board).toString().equals(player)
+                                    && numBoardPieceFlipped == 0))
+                        break;
+                    if(!(this.getRefboardPiece(cr,rc,board).toString().equals(player)))
+                        numBoardPieceFlipped++;
+                    else if(numBoardPieceFlipped>0 &&
+                            this.getRefboardPiece(cr,rc,board).toString().equals(player))
+                        return true;
+                    rc--;
+                    cr--;
+                }
+                numBoardPieceFlipped = 0;
             }
         }
         return false;
@@ -134,9 +251,163 @@ public class Othello extends _2DGame implements Runnable {
         return coords;
     }
 
-    // Not finished
     public void updateBoard(int row, int col, String player) {
+        ArrayList<Board> boardPieces = new ArrayList<Board>();
 
+        for(int c = col-1; c >= 0; c--) {
+            if(this.getboardPiece(row,c)==null ||
+                    (this.getboardPiece(row,c).toString().equals(player)
+                        && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(row,c).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(row,c));
+            else if(boardPieces.size() > 0
+                    && this.getboardPiece(row,c).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+        }
+        boardPieces.clear();
+
+        for(int c = col+1; c<this.getTotalColumns(); c++) {
+            if(this.getboardPiece(row,c)== null ||
+                    (this.getboardPiece(row,c).toString().equals(player)
+                        && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(row,c)).toString().equals(player))
+                boardPieces.add(this.getboardPiece(row,c));
+            else if(boardPieces.size() > 0
+                    && this.getboardPiece(row,c).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+        }
+        boardPieces.clear();
+
+        for(int c=row-1; c>=0; c--) {
+            if(this.getboardPiece(c,col) == null ||
+                    (this.getboardPiece(c,col).toString().equals(player)
+                        && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(c,col).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(c,col));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(c,col).toString().equals(player)){
+                boardFlips(boardPieces);
+                break;
+            }
+        }
+        boardPieces.clear();
+
+        for(int r = row+1; r<this.getTotalRows(); r++) {
+            if(this.getboardPiece(r,col)== null ||
+                    (this.getboardPiece(r,col).toString().equals(player)
+                        && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(r,col).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(r,col));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(r,col).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+        }
+        boardPieces.clear();
+
+        int rc = col +1;
+        int cr = row + 1;
+        while(rc<this.getTotalColumns() && cr < this.getTotalRows()) {
+            if(this.getboardPiece(cr,rc)== null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player)
+                            && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(cr,rc).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(cr,rc));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(cr,rc).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+            rc++;
+            cr++;
+        }
+        boardPieces.clear();
+
+        rc = col-1;
+        cr = row+1;
+        while(rc >=0 && cr <this.getTotalRows()) {
+            if(this.getboardPiece(cr,rc)== null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player)
+                            && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(cr,rc).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(cr,rc));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(cr,rc).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+            rc++;
+            cr++;
+        }
+        boardPieces.clear();
+
+        rc = col-1;
+        cr = row+1;
+        while(rc>=0 && cr<this.getTotalRows()) {
+            if(this.getboardPiece(cr,rc)== null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player)
+                            && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(cr,rc).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(cr,rc));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(cr,rc).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+            rc--;
+            cr++;
+        }
+        boardPieces.clear();
+
+        rc = col+1;
+        cr = row-1;
+        while(rc<this.getTotalColumns() && cr >=0) {
+            if(this.getboardPiece(cr,rc)== null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player)
+                            && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(cr,rc).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(cr,rc));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(cr,rc).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+            rc++;
+            cr--;
+        }
+        boardPieces.clear();
+
+        rc = col-1;
+        cr = row-1;
+        while(rc>=0 && cr<=0) {
+            if(this.getboardPiece(cr,rc)== null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player)
+                            && boardPieces.size()==0))
+                break;
+            if(!(this.getboardPiece(cr,rc).toString().equals(player)))
+                boardPieces.add(this.getboardPiece(cr,rc));
+            else if(boardPieces.size()>0
+                    && this.getboardPiece(cr,rc).toString().equals(player)) {
+                boardFlips(boardPieces);
+                break;
+            }
+            rc--;
+            cr--;
+        }
+        boardPieces.clear();
     }
 
     public void computerTurn() {
@@ -148,7 +419,55 @@ public class Othello extends _2DGame implements Runnable {
 
     // Not finished
     public int[][] listCoreAIMove(int move, String player, Board[][] board) {
-        return new int[8][8];
+        int[][] listPossibleMoves = new int[8][8];
+        for(int row = 0; row<this.getTotalRows(); row++) {
+            for(int col=0; col<this.getTotalColumns(); col++) {
+                if(move<=0) {
+                    if(isRightMove(row, col, player, board)){
+                        listPossibleMoves[row][col] = this.boardValues[row][col];
+                        ArrayList<Integer> rowListPossibleMove;
+                        ArrayList<Integer> colListPossibleMove;
+                        ArrayList<ArrayList<Integer>> listPossileMovesArray = getTotalFlippedLocale(row, col, player);
+
+                        for(int index = 0; index<listPossileMovesArray.get(0).size(); index++) {
+                            listPossibleMoves[row][col] += 2 * (this.boardValues[listPossileMovesArray.get(0).get(index)]
+                                    [listPossileMovesArray.get(1).get(index)]);
+                        }
+                    } else {
+                        listPossibleMoves[row][col] = -10000;
+                    }
+                } else{
+                    if(isRightMove(row, col, player, board)) {
+                        listPossibleMoves[row][col] = this.boardValues[row][col];
+                        ArrayList<Integer> rowListPossibleMove;
+                        ArrayList<Integer> colListPossibleMove;
+                        ArrayList<ArrayList<Integer>> listPossileMovesArray = getTotalFlippedLocale(row, col, player);
+
+                        for(int index = 0; index<listPossileMovesArray.get(0).size(); index++) {
+                            listPossibleMoves[row][col] += 2 * (this.boardValues[listPossileMovesArray.get(0).get(index)]
+                                    [listPossileMovesArray.get(1).get(index)]);
+                        }
+                        Board[][]boardPieces = new Board[this.getTotalColumns()][this.getTotalRows()];
+                        for(int r=0; r<this.getTotalRows(); r++) {
+                            for(int c=0; c<this.getTotalColumns(); c++) {
+                                if(board[r][c] !=null &&
+                                        board[r][c].toString().equals("O"))
+                                    setRefBoardPiece(row,col,new boardPiece("O"),boardPieces);
+                                else if (board[r][c]!=null &&
+                                        board[r][c].toString().equals("X"),boardPieces)
+                                    setRefBoardPiece(row,col,new boardPiece("X"),boardPieces);
+                            }
+                            setRefBoardPiece(row,col, new boardPiece(player), board);
+                            updateBoard(row,col, player,boardPieces);
+                            listPossibleMoves[row][col] -= maxElement(listCoreAIMove(move-1,boardColorFlip(player),boardPieces));
+                        }
+                    } else{
+                        listPossibleMoves[row][col] = -10000;
+                    }
+                }
+            }
+        }
+        return listPossibleMoves;
     }
 
 
@@ -191,20 +510,21 @@ public class Othello extends _2DGame implements Runnable {
             this.setBoardPiece(rowMove, columnMove, new boardPiece("O"));
     }
 
-    public void boardFlips(ArrayList<boardPiece> board) {
-        for(boardPiece piece : board) {
-            piece.flip();
+    public void boardFlips(ArrayList<Board> board) {
+        for(Board piece : board) {
+            boardPiece _p = (boardPiece)piece;
+            _p.flip();
         }
     }
 
     public String getWinner(){
         int player = 0, computer = 0;
         for(Board[] rowBoard: this.getBoard()) {
-            for(Board boardPiece: rowBoard) {
-                if(boardPiece != null && boardPiece.toString().equals("X")){
+            for(Board boardPieces: rowBoard) {
+                if(boardPieces != null && boardPieces.toString().equals("X")){
                     player++;
                 }
-                if(boardPiece != null && boardPiece.toString().equals("O")) {
+                if(boardPieces != null && boardPieces.toString().equals("O")) {
                     computer++;
                 }
             }
@@ -240,7 +560,7 @@ public class Othello extends _2DGame implements Runnable {
     }
 
     public ArrayList<ArrayList<Integer>> getTotalFlippedLocale(int row, int col, String player) {
-        ArrayList<Board> boardPiece = new ArrayList<Board>();
+        ArrayList<Board> boardPieces = new ArrayList<Board>();
         ArrayList<Integer> rowListMove = new ArrayList<Integer>();
         ArrayList<Integer> colListMove = new ArrayList<Integer>();
         ArrayList<Integer> tmp1 = new ArrayList<Integer>();
@@ -250,14 +570,14 @@ public class Othello extends _2DGame implements Runnable {
         for(int r = col-1; r >= 0; r--) {
             if(this.getboardPiece(row,r) == null ||
                     (this.getboardPiece(row,r).toString().equals(player) &&
-                        boardPiece.size() == 0))
+                        boardPieces.size() == 0))
                 break;
             if(!(this.getboardPiece(row,r).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(row,r));
+                boardPieces.add(this.getboardPiece(row,r));
             }
-            else if(boardPiece.size() > 0  &&
+            else if(boardPieces.size() > 0  &&
                     this.getboardPiece(row,r).toString().equals(player)) {
-                totalFlipped += boardPiece.size();
+                totalFlipped += boardPieces.size();
                 for(int loopFlip=0; loopFlip < tmp1.size(); loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
                     colListMove.add(tmp2.get(loopFlip));
@@ -267,19 +587,19 @@ public class Othello extends _2DGame implements Runnable {
                 break;
             }
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         for(int r = col+1; r < this.getTotalColumns(); r++) {
             if(this.getboardPiece(r,col) == null ||
                     (this.getboardPiece(r,row).toString().equals(player) &&
-                            boardPiece.size() == 0))
+                            boardPieces.size() == 0))
                 break;
             if(!(this.getboardPiece(r,col).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(r,col));
+                boardPieces.add(this.getboardPiece(r,col));
                 tmp1.add(r);
                 tmp1.add(col);
             }
-            else if(boardPiece.size() > 0  &&
+            else if(boardPieces.size() > 0  &&
                     this.getboardPiece(r,col).toString().equals(player)) {
                 for(int loopFlip=0; loopFlip < tmp1.size(); loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -290,18 +610,18 @@ public class Othello extends _2DGame implements Runnable {
                 break;
             }
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         for(int upward = row-1; upward>=0; upward--) {
             if(this.getboardPiece(upward,col)==null ||
                     (this.getboardPiece(upward,col).toString().equals(player) &&
-                        boardPiece.size() == 0))
+                        boardPieces.size() == 0))
                 break;
             if (!(this.getboardPiece(upward, col).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(upward, col));
+                boardPieces.add(this.getboardPiece(upward, col));
                 tmp1.add(upward);
                 tmp2.add(col);
-            } else if (boardPiece.size() > 0 &&
+            } else if (boardPieces.size() > 0 &&
                     this.getboardPiece(upward, col).toString().equals(player)) {
                 for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -312,18 +632,18 @@ public class Othello extends _2DGame implements Runnable {
                 break;
             }
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         for(int downward = row+1; downward < this.getTotalRows(); downward++) {
             if(this.getboardPiece(downward,col)== null ||
                     (this.getboardPiece(downward,col).toString().equals(player) &&
-                        boardPiece.size()==0))
+                        boardPieces.size()==0))
                 break;
             if (!(this.getboardPiece(downward, col).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(downward,col));
+                boardPieces.add(this.getboardPiece(downward,col));
                 tmp1.add(downward);
                 tmp2.add(col);
-            } else if(boardPiece.size() > 0 &&
+            } else if(boardPieces.size() > 0 &&
                     this.getboardPiece(downward,col).toString().equals(player)){
                 for(int loopFlip = 0; loopFlip<tmp1.size(); loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -334,19 +654,19 @@ public class Othello extends _2DGame implements Runnable {
                 break;
             }
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         int rc = col+1, cr = row + 1;
         while(rc < this.getTotalColumns() && cr < this.getTotalRows()) {
             if(this.getboardPiece(cr, rc) == null ||
                     (this.getboardPiece(cr,rc).toString().equals(player) &&
-                        boardPiece.size() > 0))
+                        boardPieces.size() > 0))
                 break;
             if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(cr,rc));
+                boardPieces.add(this.getboardPiece(cr,rc));
                 tmp1.add(cr);
                 tmp2.add(rc);
-            } else if(boardPiece.size() > 0 &&
+            } else if(boardPieces.size() > 0 &&
                     this.getboardPiece(cr, rc).toString().equals(player)) {
                 for(int loopFlip = 0; loopFlip<tmp1.size(); loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -359,20 +679,20 @@ public class Othello extends _2DGame implements Runnable {
             rc++;
             cr++;
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         rc  = col -1;
         cr =  row + 1;
         while(rc >= 0 && cr <this.getTotalRows()) {
             if(this.getboardPiece(cr,rc) == null ||
                     (this.getboardPiece(cr, rc).toString().equals(player)
-                        && boardPiece.size()>0))
+                        && boardPieces.size()>0))
                 break;
             if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(cr, rc));
+                boardPieces.add(this.getboardPiece(cr, rc));
                 tmp1.add(cr);
                 tmp2.add(rc);
-            } else if(boardPiece.size() > 0 &&
+            } else if(boardPieces.size() > 0 &&
                     this.getboardPiece(cr,rc).toString().equals(player)){
                 for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -385,20 +705,20 @@ public class Othello extends _2DGame implements Runnable {
             cr ++;
             rc -- ;
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         rc  = col +1;
         cr =  row - 1;
         while(rc < this.getTotalColumns() && cr >= 0) {
             if(this.getboardPiece(cr,rc) == null ||
                     (this.getboardPiece(cr, rc).toString().equals(player)
-                            && boardPiece.size()>0))
+                            && boardPieces.size()>0))
                 break;
             if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(cr, rc));
+                boardPieces.add(this.getboardPiece(cr, rc));
                 tmp1.add(cr);
                 tmp2.add(rc);
-            } else if(boardPiece.size() > 0 &&
+            } else if(boardPieces.size() > 0 &&
                     this.getboardPiece(cr,rc).toString().equals(player)){
                 for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -411,20 +731,20 @@ public class Othello extends _2DGame implements Runnable {
             cr --;
             rc ++;
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         rc  = col -1;
         cr =  row -1;
         while(rc >= 0 && cr >= 0) {
             if(this.getboardPiece(cr,rc) == null ||
                     (this.getboardPiece(cr, rc).toString().equals(player)
-                            && boardPiece.size()>0))
+                            && boardPieces.size()>0))
                 break;
             if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
-                boardPiece.add(this.getboardPiece(cr, rc));
+                boardPieces.add(this.getboardPiece(cr, rc));
                 tmp1.add(cr);
                 tmp2.add(rc);
-            } else if(boardPiece.size() > 0 &&
+            } else if(boardPieces.size() > 0 &&
                     this.getboardPiece(cr,rc).toString().equals(player)){
                 for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
                     rowListMove.add(tmp1.get(loopFlip));
@@ -437,7 +757,7 @@ public class Othello extends _2DGame implements Runnable {
             cr --;
             rc --;
         }
-        boardPiece.clear();
+        boardPieces.clear();
 
         ArrayList<ArrayList<Integer>> flippedLocal = new ArrayList<ArrayList<Integer>>();
         flippedLocal.add(rowListMove);
