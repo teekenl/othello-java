@@ -60,7 +60,7 @@ public class Othello extends _2DGame implements Runnable {
             if(getRefboardPiece(row, col, board) != null) {
                 return false;
             } else{
-                int numBoardPieceFlipped = 0
+                int numBoardPieceFlipped = 0;
                 for(int boardIndex = col - 1; boardIndex >= 0; boardIndex--) {
                     if(getRefboardPiece(row, boardIndex, board) == null ||
                             (this.getRefboardPiece(row,boardIndex,board).toString().equals(player)
@@ -454,11 +454,11 @@ public class Othello extends _2DGame implements Runnable {
                                         board[r][c].toString().equals("O"))
                                     setRefBoardPiece(row,col,new boardPiece("O"),boardPieces);
                                 else if (board[r][c]!=null &&
-                                        board[r][c].toString().equals("X"),boardPieces)
+                                        board[r][c].toString().equals("X"))
                                     setRefBoardPiece(row,col,new boardPiece("X"),boardPieces);
                             }
                             setRefBoardPiece(row,col, new boardPiece(player), board);
-                            updateBoard(row,col, player,boardPieces);
+                            //updateBoard(row,col, player,boardPieces);
                             listPossibleMoves[row][col] -= maxElement(listCoreAIMove(move-1,boardColorFlip(player),boardPieces));
                         }
                     } else{
@@ -478,11 +478,11 @@ public class Othello extends _2DGame implements Runnable {
 
         int[][] computerMoves;
         Board[][] board = new Board[this.getTotalRows()][this.getTotalColumns()];
-        for (int row = 0; row < this.getTotalRows(); row++)
-            for(int col = 0; col < this.getTotalColumns(); col++) {
+        for (int row = 0; row < this.getTotalRows(); row++) {
+            for (int col = 0; col < this.getTotalColumns(); col++) {
                 board[row][col] = this.getBoard()[row][col];
             }
-
+        }
         computerMoves = this.listCoreAIMove(move, "O", board);
 
         for (int row = 0; row < this.getTotalRows(); row++) {
