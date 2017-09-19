@@ -3,6 +3,7 @@ package othello;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.util.*;
 
@@ -101,7 +102,7 @@ public class Othello extends _2DGame implements Runnable {
     public boolean playerTurn(int row, int col) {
         if (this.isRightMove(row, col, "X", this.getBoard())) {
             this.setBoardPiece(row, col, new boardPiece("X"));
-            this.updateBoard();
+            this.updateBoard(row,col, "X");
             this.renderBoard();
             return true;
         }
@@ -134,7 +135,7 @@ public class Othello extends _2DGame implements Runnable {
     }
 
     // Not finished
-    public void updateBoard() {
+    public void updateBoard(int row, int col, String player) {
 
     }
 
@@ -150,7 +151,7 @@ public class Othello extends _2DGame implements Runnable {
         return new int[8][8];
     }
 
-    // Not finished
+
     public void coreAIMove(int move) {
         int rowMove = 0, columnMove = 0;
         ArrayList<Integer> rowListMoves = new ArrayList<Integer>(rowMove);
@@ -234,18 +235,216 @@ public class Othello extends _2DGame implements Runnable {
         return max == -10000 ? 0 : max;
     }
 
-    public String flipColor (String s) {
+    public String boardColorFlip (String s) {
         return s.equals("X") ? "O" : "X";
     }
 
-    //Not finished
-    public int getTotalFlippedPiece() {
-        return 0;
+    public ArrayList<ArrayList<Integer>> getTotalFlippedLocale(int row, int col, String player) {
+        ArrayList<Board> boardPiece = new ArrayList<Board>();
+        ArrayList<Integer> rowListMove = new ArrayList<Integer>();
+        ArrayList<Integer> colListMove = new ArrayList<Integer>();
+        ArrayList<Integer> tmp1 = new ArrayList<Integer>();
+        ArrayList<Integer> tmp2 = new ArrayList<Integer>();
+        int totalFlipped = 0;
+
+        for(int r = col-1; r >= 0; r--) {
+            if(this.getboardPiece(row,r) == null ||
+                    (this.getboardPiece(row,r).toString().equals(player) &&
+                        boardPiece.size() == 0))
+                break;
+            if(!(this.getboardPiece(row,r).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(row,r));
+            }
+            else if(boardPiece.size() > 0  &&
+                    this.getboardPiece(row,r).toString().equals(player)) {
+                totalFlipped += boardPiece.size();
+                for(int loopFlip=0; loopFlip < tmp1.size(); loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+        }
+        boardPiece.clear();
+
+        for(int r = col+1; r < this.getTotalColumns(); r++) {
+            if(this.getboardPiece(r,col) == null ||
+                    (this.getboardPiece(r,row).toString().equals(player) &&
+                            boardPiece.size() == 0))
+                break;
+            if(!(this.getboardPiece(r,col).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(r,col));
+                tmp1.add(r);
+                tmp1.add(col);
+            }
+            else if(boardPiece.size() > 0  &&
+                    this.getboardPiece(r,col).toString().equals(player)) {
+                for(int loopFlip=0; loopFlip < tmp1.size(); loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+        }
+        boardPiece.clear();
+
+        for(int upward = row-1; upward>=0; upward--) {
+            if(this.getboardPiece(upward,col)==null ||
+                    (this.getboardPiece(upward,col).toString().equals(player) &&
+                        boardPiece.size() == 0))
+                break;
+            if (!(this.getboardPiece(upward, col).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(upward, col));
+                tmp1.add(upward);
+                tmp2.add(col);
+            } else if (boardPiece.size() > 0 &&
+                    this.getboardPiece(upward, col).toString().equals(player)) {
+                for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+        }
+        boardPiece.clear();
+
+        for(int downward = row+1; downward < this.getTotalRows(); downward++) {
+            if(this.getboardPiece(downward,col)== null ||
+                    (this.getboardPiece(downward,col).toString().equals(player) &&
+                        boardPiece.size()==0))
+                break;
+            if (!(this.getboardPiece(downward, col).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(downward,col));
+                tmp1.add(downward);
+                tmp2.add(col);
+            } else if(boardPiece.size() > 0 &&
+                    this.getboardPiece(downward,col).toString().equals(player)){
+                for(int loopFlip = 0; loopFlip<tmp1.size(); loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+        }
+        boardPiece.clear();
+
+        int rc = col+1, cr = row + 1;
+        while(rc < this.getTotalColumns() && cr < this.getTotalRows()) {
+            if(this.getboardPiece(cr, rc) == null ||
+                    (this.getboardPiece(cr,rc).toString().equals(player) &&
+                        boardPiece.size() > 0))
+                break;
+            if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(cr,rc));
+                tmp1.add(cr);
+                tmp2.add(rc);
+            } else if(boardPiece.size() > 0 &&
+                    this.getboardPiece(cr, rc).toString().equals(player)) {
+                for(int loopFlip = 0; loopFlip<tmp1.size(); loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+            rc++;
+            cr++;
+        }
+        boardPiece.clear();
+
+        rc  = col -1;
+        cr =  row + 1;
+        while(rc >= 0 && cr <this.getTotalRows()) {
+            if(this.getboardPiece(cr,rc) == null ||
+                    (this.getboardPiece(cr, rc).toString().equals(player)
+                        && boardPiece.size()>0))
+                break;
+            if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(cr, rc));
+                tmp1.add(cr);
+                tmp2.add(rc);
+            } else if(boardPiece.size() > 0 &&
+                    this.getboardPiece(cr,rc).toString().equals(player)){
+                for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+            cr ++;
+            rc -- ;
+        }
+        boardPiece.clear();
+
+        rc  = col +1;
+        cr =  row - 1;
+        while(rc < this.getTotalColumns() && cr >= 0) {
+            if(this.getboardPiece(cr,rc) == null ||
+                    (this.getboardPiece(cr, rc).toString().equals(player)
+                            && boardPiece.size()>0))
+                break;
+            if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(cr, rc));
+                tmp1.add(cr);
+                tmp2.add(rc);
+            } else if(boardPiece.size() > 0 &&
+                    this.getboardPiece(cr,rc).toString().equals(player)){
+                for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+            cr --;
+            rc ++;
+        }
+        boardPiece.clear();
+
+        rc  = col -1;
+        cr =  row -1;
+        while(rc >= 0 && cr >= 0) {
+            if(this.getboardPiece(cr,rc) == null ||
+                    (this.getboardPiece(cr, rc).toString().equals(player)
+                            && boardPiece.size()>0))
+                break;
+            if(!(this.getboardPiece(cr, rc).toString().equals(player))) {
+                boardPiece.add(this.getboardPiece(cr, rc));
+                tmp1.add(cr);
+                tmp2.add(rc);
+            } else if(boardPiece.size() > 0 &&
+                    this.getboardPiece(cr,rc).toString().equals(player)){
+                for(int loopFlip=0; loopFlip<tmp1.size();loopFlip++) {
+                    rowListMove.add(tmp1.get(loopFlip));
+                    colListMove.add(tmp2.get(loopFlip));
+                    rowListMove.clear();
+                    colListMove.clear();
+                }
+                break;
+            }
+            cr --;
+            rc --;
+        }
+        boardPiece.clear();
+
+        ArrayList<ArrayList<Integer>> flippedLocal = new ArrayList<ArrayList<Integer>>();
+        flippedLocal.add(rowListMove);
+        flippedLocal.add(colListMove);
+        return flippedLocal;
     }
 
-    public int getTotalFlippedLocale(){
-
-    }
 
     @Override
     public void run() {
